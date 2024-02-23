@@ -146,7 +146,7 @@ def send_email_smtp(message, sqs_message):
     # setup the parameters of the message
     msg['From']=FROM_ADDRESS
     msg['To']=to_addr
-    msg['Subject']="This is from lambda"
+    msg['Subject']="Restaurant recommendation from Dining-Concierge!"
     
     # add in the message body
     msg.attach(MIMEText(message, 'plain'))
@@ -160,10 +160,10 @@ def send_email_smtp(message, sqs_message):
 
 def lambda_handler(event, context):
     sqs_message = getSQSMsg()
+    deleteSQSMsg(sqs_message)
     restaurant = fetchRestaurant(sqs_message)
     formatted_message = formatEmail(restaurant)
     send_email_smtp(formatted_message, sqs_message)
-    deleteSQSMsg(sqs_message)
 
     return {
         'statusCode': 200,
